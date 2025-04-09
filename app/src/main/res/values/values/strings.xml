@@ -12,6 +12,8 @@
     <string name="feedback_question">Do you think this app is good?</string>
     <string name="good">Good</string>
     <string name="needs_improvement">Needs Improvement</string>
+    <string name="logout">Logout</string>
+    <string name="logout_successful">Logout Successful!</string>
     <string name="change_language">Change Language</string>
     <string name="to_english">Switch to English</string>
     <string name="to_indonesian">Ubah ke Bahasa Indonesia</string>
