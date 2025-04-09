@@ -1,6 +1,7 @@
 package com.aisyahpn0033.qrcodegenerator.ui.about
 
 // Import komponen UI dari Jetpack Compose
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -15,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.aisyahpn0033.qrcodegenerator.R // Import resource drawable (logo app)
+import com.aisyahpn0033.qrcodegenerator.ui.theme.AppTheme
 
 // Fungsi utama AboutScreen, menerima NavController untuk navigasi
 @Composable
@@ -109,7 +111,15 @@ fun AboutScreenContent(onBackClick: () -> Unit) {
 
 // Fungsi Preview untuk melihat tampilan AboutScreen di Android Studio Preview
 @Preview(showSystemUi = true, showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun AboutScreenPreview() {
-    AboutScreenContent(onBackClick = {}) // Tidak melakukan navigasi saat preview
+    AppTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            AboutScreenContent(onBackClick = {})
+        }
+    }
 }
