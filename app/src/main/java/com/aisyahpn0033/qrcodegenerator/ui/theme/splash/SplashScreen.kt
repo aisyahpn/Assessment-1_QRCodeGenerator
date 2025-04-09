@@ -25,7 +25,7 @@ fun SplashScreen(navController: NavController, isPreview: Boolean = false) {
     if (!isPreview) {
         LaunchedEffect(Unit) {
             delay(3000) // Menunda selama 3 detik
-            navController.navigate(Screen.Splash.route) {
+            navController.navigate(Screen.Home.route) {
                 // Hapus Splash dari back stack agar tidak bisa kembali ke sini
                 popUpTo(Screen.Splash.route) { inclusive = true }
             }

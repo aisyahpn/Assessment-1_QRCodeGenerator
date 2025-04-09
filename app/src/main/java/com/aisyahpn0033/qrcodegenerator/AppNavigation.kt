@@ -8,6 +8,8 @@ import androidx.navigation.compose.rememberNavController
 
 // Import screen-screen dari folder UI
 import com.aisyahpn0033.qrcodegenerator.ui.splash.SplashScreen
+import com.aisyahpn0033.qrcodegenerator.ui.home.HomeScreen
+import com.aisyahpn0033.qrcodegenerator.ui.about.AboutScreen
 
 // Fungsi utama navigasi aplikasi
 @Composable
@@ -21,6 +23,18 @@ fun AppNavigation() {
         composable(Screen.Splash.route) {
             SplashScreen(navController)
         }
+
+        // Rute ke AboutScreen
+        composable(Screen.About.route) {
+            AboutScreen(navController)
+        }
+
+        // Rute ke HomeScreen (dengan parameter userName)
+        composable(Screen.Home.route) { backStackEntry ->
+            // Mengambil argument jika ada, tapi tidak digunakan di sini
+            backStackEntry.arguments?.getString("userName") ?: "Guest"
+            HomeScreen(navController)
+        }
     }
 }
 
@@ -29,4 +43,10 @@ sealed class Screen(val route: String) {
 
     // Splash screen route
     data object Splash : Screen("splash")
+
+    // Home screen route, dengan parameter userName (opsional di sini)
+    data object Home : Screen("home/{userName}")
+
+    // About screen route
+    data object About : Screen("about")
 }
