@@ -1,4 +1,4 @@
-package com.aisyahputrinuraini.assessment_1.ui.database
+package com.aisyahpn0033.qrcodegenerator.ui.theme.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

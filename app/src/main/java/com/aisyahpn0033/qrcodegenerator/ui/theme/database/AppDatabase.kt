@@ -1,4 +1,4 @@
-package com.aisyahpn0033.assessment_1.ui.database
+package com.aisyahpn0033.qrcodegenerator.ui.theme.database
 
 import android.content.Context
 import androidx.room.Database

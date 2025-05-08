@@ -1,4 +1,4 @@
-package com.aisyahpn0033.assessment_1.ui.home
+package com.aisyahpn0033.qrcodegenerator.ui.theme.home
 
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -15,9 +15,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.aisyahputrinuraini.assessment_1.ui.database.QrEntity
-import com.aisyahputrinuraini.assessment_1.ui.theme.AppTheme
-import com.aisyahputrinuraini.assessment_1.ui.theme.AppThemeOption
 import com.aisyahputrinuraini.assessment_1.ui.viewmodel.QrViewModel
 import kotlinx.coroutines.launch
 import java.util.Date
