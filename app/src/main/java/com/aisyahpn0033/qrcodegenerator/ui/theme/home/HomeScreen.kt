@@ -2,6 +2,7 @@
 package com.aisyahpn0033.qrcodegenerator.ui.theme.home
 
 // Import library dan komponen yang dibutuhkan
+import android.app.Application
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
@@ -41,6 +42,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,23 +54,37 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aisyahpn0033.qrcodegenerator.QRCodeGenerator
 import com.aisyahpn0033.qrcodegenerator.Screen
 import com.aisyahpn0033.qrcodegenerator.ui.theme.AppTheme
+import com.aisyahpn0033.qrcodegenerator.ui.theme.AppThemeOption
+import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.QrViewModel
+import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.QrViewModelFactory
+import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.SettingsViewModel
 
 // Fungsi utama yang menampilkan HomeScreen, menerima NavController untuk navigasi
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController) {
     val context = LocalContext.current
+    val viewModel: QrViewModel = viewModel(
+        factory = QrViewModelFactory(context.applicationContext as Application)
+    )
     var inputText by remember { mutableStateOf("") } // Menyimpan input teks dari user
     var qrBitmap by remember { mutableStateOf<Bitmap?>(null) } // Menyimpan hasil bitmap QR
     var expanded by remember { mutableStateOf(false) } // Menentukan apakah menu dropdown terbuka
+    val themeViewModel: SettingsViewModel = viewModel() // Tambahkan ViewModel tema
+    val theme by themeViewModel.themeFlow.collectAsState(initial = AppThemeOption.SYSTEM)
+    var themeExpanded by remember { mutableStateOf(false) } // Untuk drop internal tema
+
 
     // Fungsi untuk menghasilkan QR Code dari inputText
     fun generateQR() {
         qrBitmap = QRCodeGenerator.generateQRCode(inputText)
+        viewModel.addQr(inputText)
+
     }
 
     // Struktur Scaffold untuk topAppBar dan konten utama
@@ -92,6 +108,13 @@ fun HomeScreen(navController: NavController) {
                             }
                         )
                         DropdownMenuItem(
+                            text = { Text("Recycle Bin") },
+                            onClick = {
+                                expanded = false
+                                navController.navigate(Screen.RecycleBin.route)
+                            }
+                        )
+                        DropdownMenuItem(
                             text = { Text("Share") },
                             onClick = {
                                 expanded = false
@@ -102,6 +125,41 @@ fun HomeScreen(navController: NavController) {
                                 context.startActivity(Intent.createChooser(shareIntent, "Bagikan dengan"))
                             }
                         )
+
+                        // Menu Tema
+                        DropdownMenuItem(
+                            text = { Text("Tema: ${theme.displayName}") },
+                            onClick = {
+                                themeExpanded = !themeExpanded // buka/tutup subtema
+                            }
+                        )
+
+                        // Submenu tema (dropdown di dalam dropdown)
+                        if (themeExpanded) {
+                            AppThemeOption.values().forEach { option ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            RadioButton(
+                                                selected = theme == option,
+                                                onClick = {
+                                                    themeViewModel.setTheme(option)
+                                                    themeExpanded = false
+                                                    expanded = false
+                                                }
+                                            )
+                                            Spacer(modifier = Modifier.width(4.dp))
+                                            Text(option.displayName)
+                                        }
+                                    },
+                                    onClick = {
+                                        themeViewModel.setTheme(option)
+                                        themeExpanded = false
+                                        expanded = false
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
             )
@@ -115,7 +173,13 @@ fun HomeScreen(navController: NavController) {
             inputText = inputText,
             onInputChange = { inputText = it },
             qrBitmap = qrBitmap,
-            onGenerateClick = { generateQR() },
+            onGenerateClick = {
+                generateQR()
+            },
+
+            onViewListClick = {
+                navController.navigate(Screen.QrList.route) // Navigasi ke QRListScreen
+            }
         )
     }
 }
@@ -128,6 +192,8 @@ fun HomeScreenContent(
     onInputChange: (String) -> Unit,
     qrBitmap: Bitmap?,
     onGenerateClick: () -> Unit,
+    onViewListClick: () -> Unit // Tambahkan parameter untuk view list
+
 ) {
     var selectedFeedback by remember { mutableStateOf("") } // Menyimpan pilihan feedback
     val scrollState = rememberScrollState() // Mengatur scroll jika konten panjang
@@ -188,6 +254,16 @@ fun HomeScreenContent(
                         shape = MaterialTheme.shapes.medium
                     ) {
                         Text("Generate QR Code", style = MaterialTheme.typography.titleMedium)
+                    }
+
+                    Button(
+                        onClick = onViewListClick, // Memanggil fungsi navigasi
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        Text("Lihat Daftar QR", style = MaterialTheme.typography.titleMedium)
                     }
                 }
             }
@@ -279,8 +355,6 @@ fun HomeScreenContent(
                 }
             }
 
-            // Spacer tambahan
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
@@ -290,7 +364,7 @@ fun HomeScreenContent(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    AppTheme {
+    AppTheme(themeOption = AppThemeOption.LIGHT) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
@@ -300,7 +374,15 @@ fun HomeScreenPreview() {
                 onInputChange = {},
                 qrBitmap = null,
                 onGenerateClick = {},
+                onViewListClick = {}
             )
         }
     }
 }
+
+// Sumber https://composables.com/material3/dropdownmenu
+// https://youtu.be/9eIhMFTs1Q8?si=8FXF0d4sN3J1EVed
+// https://youtu.be/5h737wNN-qM?si=SwTeE1oD8lXmpVUo
+// https://youtu.be/qbtlrGHOVjg?si=UGTM3FjI0AUJ_ID5
+// https://youtu.be/YFS2EfGJBJk?si=PsKZQ4EnR7QSGnQh
+// https://youtu.be/bg0AOzV4Nl4?si=8IJIbwbcvfNKs8L5
