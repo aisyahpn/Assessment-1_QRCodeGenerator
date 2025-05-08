@@ -3,6 +3,8 @@ package com.aisyahpn0033.qrcodegenerator
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aisyahpn0033.qrcodegenerator.ui.theme.AppTheme
 import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.QrViewModel

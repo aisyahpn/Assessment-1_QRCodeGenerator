@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.aisyahpn0033.qrcodegenerator.R // Import resource drawable (logo app)
 import com.aisyahpn0033.qrcodegenerator.ui.theme.AppTheme
+import com.aisyahpn0033.qrcodegenerator.ui.theme.AppThemeOption
 
 // Fungsi utama AboutScreen, menerima NavController untuk navigasi
 @Composable
@@ -114,7 +115,7 @@ fun AboutScreenContent(onBackClick: () -> Unit) {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun AboutScreenPreview() {
-    AppTheme {
+    AppTheme(themeOption = AppThemeOption.LIGHT) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background

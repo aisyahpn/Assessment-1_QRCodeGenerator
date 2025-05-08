@@ -14,6 +14,7 @@ import com.aisyahpn0033.qrcodegenerator.ui.theme.splash.SplashScreen
 import com.aisyahpn0033.qrcodegenerator.ui.theme.home.HomeScreen
 import com.aisyahpn0033.qrcodegenerator.ui.theme.about.AboutScreen
 import com.aisyahpn0033.qrcodegenerator.ui.theme.home.QRListScreen
+import com.aisyahpn0033.qrcodegenerator.ui.theme.recycle.RecycleBinScreen
 import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.QrViewModel
 import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.QrViewModelFactory
 import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.SettingsViewModel
@@ -40,14 +41,19 @@ fun AppNavigation(
             HomeScreen(navController)
         }
 
+        composable(Screen.QrList.route) {
+            QRListScreen(viewModel = qrViewModel)
+        }
         composable(Screen.RecycleBin.route) {
             val viewModel: QrViewModel = viewModel(
                 factory = QrViewModelFactory(LocalContext.current.applicationContext as Application)
             )
             RecycleBinScreen(viewModel)
         }
+
     }
 }
+
 
 // Sealed class berisi semua screen dan route-nya
 sealed class Screen(val route: String) {
