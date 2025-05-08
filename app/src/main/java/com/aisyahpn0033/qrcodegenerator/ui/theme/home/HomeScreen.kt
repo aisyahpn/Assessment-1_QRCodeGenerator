@@ -1,5 +1,5 @@
 // Package lokasi file
-package com.aisyahpn0033.qrcodegenerator.ui.home
+package com.aisyahpn0033.qrcodegenerator.ui.theme.home
 
 // Import library dan komponen yang dibutuhkan
 import android.content.Intent

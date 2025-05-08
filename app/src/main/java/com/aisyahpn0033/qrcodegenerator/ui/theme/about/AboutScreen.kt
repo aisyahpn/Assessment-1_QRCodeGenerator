@@ -1,4 +1,4 @@
-package com.aisyahpn0033.qrcodegenerator.ui.about
+package com.aisyahpn0033.qrcodegenerator.ui.theme.about
 
 // Import komponen UI dari Jetpack Compose
 import android.content.res.Configuration

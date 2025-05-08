@@ -1,4 +1,4 @@
-package com.aisyahpn0033.qrcodegenerator.ui.splash
+package com.aisyahpn0033.qrcodegenerator.ui.theme.splash
 
 // Import elemen-elemen Compose yang dibutuhkan
 import androidx.compose.foundation.Image

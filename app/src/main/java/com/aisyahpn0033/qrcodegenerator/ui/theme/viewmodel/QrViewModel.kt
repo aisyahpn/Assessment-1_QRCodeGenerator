@@ -5,6 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.asLiveData
+import com.aisyahpn0033.qrcodegenerator.ui.theme.database.AppDatabase
+import com.aisyahpn0033.qrcodegenerator.ui.theme.database.QrEntity
 import kotlinx.coroutines.launch
 
 class QrViewModel(application: Application) : AndroidViewModel(application) {

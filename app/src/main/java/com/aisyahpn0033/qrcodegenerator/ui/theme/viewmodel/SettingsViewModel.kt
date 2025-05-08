@@ -3,6 +3,8 @@ package com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.aisyahpn0033.qrcodegenerator.ui.theme.AppThemeOption
+import com.aisyahpn0033.qrcodegenerator.ui.theme.ThemePreferenceManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 

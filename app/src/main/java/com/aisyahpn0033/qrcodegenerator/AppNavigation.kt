@@ -7,33 +7,37 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
 // Import screen-screen dari folder UI
-import com.aisyahpn0033.qrcodegenerator.ui.splash.SplashScreen
-import com.aisyahpn0033.qrcodegenerator.ui.home.HomeScreen
-import com.aisyahpn0033.qrcodegenerator.ui.about.AboutScreen
+import com.aisyahpn0033.qrcodegenerator.ui.theme.splash.SplashScreen
+import com.aisyahpn0033.qrcodegenerator.ui.theme.home.HomeScreen
+import com.aisyahpn0033.qrcodegenerator.ui.theme.about.AboutScreen
+import com.aisyahpn0033.qrcodegenerator.ui.theme.home.QRListScreen
+import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.QrViewModel
+import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.SettingsViewModel
 
 // Fungsi utama navigasi aplikasi
 @Composable
-fun AppNavigation() {
-    val navController = rememberNavController() // Membuat NavController untuk mengatur navigasi
+fun AppNavigation(
+    qrViewModel: QrViewModel,
+    settingsViewModel: SettingsViewModel
+) {
+    val navController = rememberNavController()
 
-    // NavHost: tempat semua route didefinisikan, dimulai dari splash screen
     NavHost(navController = navController, startDestination = Screen.Splash.route) {
 
-        // Rute ke SplashScreen
         composable(Screen.Splash.route) {
             SplashScreen(navController)
         }
 
-        // Rute ke AboutScreen
         composable(Screen.About.route) {
             AboutScreen(navController)
         }
 
-        // Rute ke HomeScreen (dengan parameter userName)
-        composable(Screen.Home.route) { backStackEntry ->
-            // Mengambil argument jika ada, tapi tidak digunakan di sini
-            backStackEntry.arguments?.getString("userName") ?: "Guest"
+        composable(Screen.Home.route) {
             HomeScreen(navController)
+        }
+
+        composable(Screen.QrList.route) {
+            QRListScreen(viewModel = qrViewModel)
         }
     }
 }
@@ -49,4 +53,7 @@ sealed class Screen(val route: String) {
 
     // About screen route
     data object About : Screen("about")
+
+    data object QrList : Screen("qr_list")
+
 }

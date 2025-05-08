@@ -15,7 +15,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.aisyahputrinuraini.assessment_1.ui.viewmodel.QrViewModel
+import com.aisyahpn0033.qrcodegenerator.ui.theme.AppTheme
+import com.aisyahpn0033.qrcodegenerator.ui.theme.AppThemeOption
+import com.aisyahpn0033.qrcodegenerator.ui.theme.database.QrEntity
+import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.QrViewModel
 import kotlinx.coroutines.launch
 import java.util.Date
 
