@@ -21,7 +21,7 @@ object ThemePreferenceManager {
 
     fun getThemeFlow(context: Context): Flow<AppThemeOption> {
         return context.dataStore.data.map { preferences ->
-            val name = preferences[THEME_KEY] ?: AppThemeOption.SYSTEM.name
+            val name = preferences[THEME_KEY] ?: AppThemeOption.LIGHT.name
             AppThemeOption.valueOf(name)
         }
     }

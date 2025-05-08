@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
             val settingsViewModel: SettingsViewModel = viewModel()
 
             // Dapatkan tema saat ini dari DataStore
-            val themeOption by settingsViewModel.themeFlow.collectAsState(initial = AppThemeOption.SYSTEM)
+            val themeOption by settingsViewModel.themeFlow.collectAsState(initial = AppThemeOption.LIGHT)
 
             // Bungkus dengan tema yang dipilih
             AppTheme(themeOption = themeOption) {

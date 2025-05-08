@@ -76,7 +76,7 @@ fun HomeScreen(navController: NavController) {
     var qrBitmap by remember { mutableStateOf<Bitmap?>(null) } // Menyimpan hasil bitmap QR
     var expanded by remember { mutableStateOf(false) } // Menentukan apakah menu dropdown terbuka
     val themeViewModel: SettingsViewModel = viewModel() // Tambahkan ViewModel tema
-    val theme by themeViewModel.themeFlow.collectAsState(initial = AppThemeOption.SYSTEM)
+    val theme by themeViewModel.themeFlow.collectAsState(initial = AppThemeOption.LIGHT)
     var themeExpanded by remember { mutableStateOf(false) } // Untuk drop internal tema
 
 
