@@ -13,6 +13,9 @@ import androidx.navigation.compose.rememberNavController
 import com.aisyahpn0033.qrcodegenerator.ui.theme.splash.SplashScreen
 import com.aisyahpn0033.qrcodegenerator.ui.theme.home.HomeScreen
 import com.aisyahpn0033.qrcodegenerator.ui.theme.about.AboutScreen
+import com.aisyahpn0033.qrcodegenerator.ui.theme.auth.LoginScreen
+import com.aisyahpn0033.qrcodegenerator.ui.theme.auth.ProfileScreen
+import com.aisyahpn0033.qrcodegenerator.ui.theme.auth.RegisterScreen
 import com.aisyahpn0033.qrcodegenerator.ui.theme.home.QRListScreen
 import com.aisyahpn0033.qrcodegenerator.ui.theme.recycle.RecycleBinScreen
 import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.QrViewModel
@@ -31,6 +34,18 @@ fun AppNavigation(
 
         composable(Screen.Splash.route) {
             SplashScreen(navController)
+        }
+
+        composable(Screen.Login.route) {
+            LoginScreen(navController)
+        }
+
+        composable(Screen.Register.route) {
+            RegisterScreen(navController)
+        }
+
+        composable(Screen.Profile.route) {
+            ProfileScreen()
         }
 
         composable(Screen.About.route) {
@@ -61,6 +76,12 @@ sealed class Screen(val route: String) {
     // Splash screen route
     data object Splash : Screen("splash")
 
+    object Login : Screen("login")
+
+    object Register : Screen("register")
+
+    object Profile : Screen("profile")
+
     // Home screen route, dengan parameter userName (opsional di sini)
     data object Home : Screen("home/{userName}")
 
@@ -73,3 +94,5 @@ sealed class Screen(val route: String) {
 
 
 }
+
+// Sumber https://youtu.be/sRv2L4PiqvM?si=Ufetj6zbJMfWBJ11
