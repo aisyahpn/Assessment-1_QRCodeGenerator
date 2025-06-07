@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -226,8 +227,37 @@ fun EditQrDialog(
     val context = LocalContext.current
     var editedText by remember { mutableStateOf(qr.text) }
     var selectedImagePath by remember { mutableStateOf(qr.imagePath) }
+    var tempCameraImageUri by remember { mutableStateOf<Uri?>(null) }
 
-    val launcher = rememberLauncherForActivityResult(
+    // Launcher kamera
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture(),
+        onResult = { success ->
+            if (success && tempCameraImageUri != null) {
+                val path = copyUriToInternalStorage(context, tempCameraImageUri!!)
+                if (path != null) {
+                    selectedImagePath = path
+                }
+            }
+        }
+    )
+
+    // Launcher permission kamera
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            val uri = createImageUri(context)
+            if (uri != null) {
+                tempCameraImageUri = uri
+                cameraLauncher.launch(uri)
+            } else {
+                Toast.makeText(context, "Gagal membuat URI untuk kamera", Toast.LENGTH_SHORT).show()
+            }
+        }
+    )
+
+    // Launcher galeri
+    val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
             uri?.let {
@@ -251,10 +281,20 @@ fun EditQrDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = {
-                    launcher.launch("image/*")
-                }) {
-                    Text("Pilih Gambar Baru")
+
+                // Tombol Ambil Foto + Pilih dari Galeri
+                Row {
+                    Button(onClick = {
+                        permissionLauncher.launch(android.Manifest.permission.CAMERA)
+                    }) {
+                        Text("Ambil Foto")
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(onClick = {
+                        galleryLauncher.launch("image/*")
+                    }) {
+                        Text("Pilih dari Galeri")
+                    }
                 }
 
                 selectedImagePath?.let {
@@ -288,6 +328,7 @@ fun EditQrDialog(
         }
     )
 }
+
 
 
 @Composable
@@ -356,6 +397,17 @@ fun QrCard(
         }
     }
 }
+fun createImageUri(context: Context): Uri? {
+    val contentValues = android.content.ContentValues().apply {
+        put(android.provider.MediaStore.Images.Media.DISPLAY_NAME, "camera_image_${System.currentTimeMillis()}.jpg")
+        put(android.provider.MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+    }
+
+    return context.contentResolver.insert(
+        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+        contentValues
+    )
+}
 
 fun saveBitmapToInternalStorage(context: Context, bitmap: Bitmap): String? {
     val fileName = "qr_${System.currentTimeMillis()}.png"
@@ -386,6 +438,7 @@ fun copyUriToInternalStorage(context: Context, uri: Uri): String? {
         e.printStackTrace()
         null
     }
+
 }
 
 
