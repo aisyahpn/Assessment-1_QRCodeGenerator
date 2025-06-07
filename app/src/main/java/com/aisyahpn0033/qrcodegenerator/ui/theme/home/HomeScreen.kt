@@ -8,45 +8,12 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.ThumbDown
-import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -54,12 +21,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.filled.ThumbDown
+import androidx.compose.material3.Icon
+import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import com.aisyahpn0033.qrcodegenerator.QRCodeGenerator
 import com.aisyahpn0033.qrcodegenerator.Screen
 import com.aisyahpn0033.qrcodegenerator.ui.theme.AppTheme
 import com.aisyahpn0033.qrcodegenerator.ui.theme.AppThemeOption
+import com.aisyahpn0033.qrcodegenerator.ui.theme.data.UserPreferences
 import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.QrViewModel
 import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.QrViewModelFactory
 import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.SettingsViewModel
@@ -69,6 +42,7 @@ import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.SettingsViewModel
 @Composable
 fun HomeScreen(navController: NavController) {
     val context = LocalContext.current
+    var isGenerating by remember { mutableStateOf(false) }
     val viewModel: QrViewModel = viewModel(
         factory = QrViewModelFactory(context.applicationContext as Application)
     )
@@ -76,15 +50,26 @@ fun HomeScreen(navController: NavController) {
     var qrBitmap by remember { mutableStateOf<Bitmap?>(null) } // Menyimpan hasil bitmap QR
     var expanded by remember { mutableStateOf(false) } // Menentukan apakah menu dropdown terbuka
     val themeViewModel: SettingsViewModel = viewModel() // Tambahkan ViewModel tema
+    val scope = rememberCoroutineScope()
+    val userPrefs = remember { UserPreferences(context) }
     val theme by themeViewModel.themeFlow.collectAsState(initial = AppThemeOption.LIGHT)
     var themeExpanded by remember { mutableStateOf(false) } // Untuk drop internal tema
 
 
     // Fungsi untuk menghasilkan QR Code dari inputText
     fun generateQR() {
-        qrBitmap = QRCodeGenerator.generateQRCode(inputText)
-        viewModel.addQr(inputText)
-
+        if (inputText.isNotEmpty()) {
+            isGenerating = true
+            val bitmap = QRCodeGenerator.generateQRCode(inputText)
+            bitmap?.let {
+                qrBitmap = it
+                val path = saveBitmapToInternalStorage(context, it) // simpan file
+                if (path != null) {
+                    viewModel.addQr(inputText, path)
+                }
+            }
+            isGenerating = false
+        }
     }
 
     // Struktur Scaffold untuk topAppBar dan konten utama
@@ -160,6 +145,26 @@ fun HomeScreen(navController: NavController) {
                                 )
                             }
                         }
+                        DropdownMenuItem(
+                            text = { Text("Profil") },
+                            onClick = {
+                                expanded = false
+                                navController.navigate(Screen.Profile.route)
+                            }
+                        )
+                        // 🔒 Logout Item
+                        DropdownMenuItem(
+                            text = { Text("Logout") },
+                            onClick = {
+                                expanded = false
+                                scope.launch {
+                                    userPrefs.logout()
+                                    navController.navigate(Screen.Login.route) {
+                                        popUpTo(0) // Clear semua backstack
+                                    }
+                                }
+                            }
+                        )
                     }
                 }
             )
@@ -176,10 +181,10 @@ fun HomeScreen(navController: NavController) {
             onGenerateClick = {
                 generateQR()
             },
-
             onViewListClick = {
                 navController.navigate(Screen.QrList.route) // Navigasi ke QRListScreen
-            }
+            },
+            isGenerating = isGenerating
         )
     }
 }
@@ -192,7 +197,8 @@ fun HomeScreenContent(
     onInputChange: (String) -> Unit,
     qrBitmap: Bitmap?,
     onGenerateClick: () -> Unit,
-    onViewListClick: () -> Unit // Tambahkan parameter untuk view list
+    onViewListClick: () -> Unit, // Tambahkan parameter untuk view list
+    isGenerating: Boolean
 
 ) {
     var selectedFeedback by remember { mutableStateOf("") } // Menyimpan pilihan feedback
@@ -248,12 +254,23 @@ fun HomeScreenContent(
                     // Tombol untuk generate QR Code
                     Button(
                         onClick = onGenerateClick,
+                        enabled = !isGenerating,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
                         shape = MaterialTheme.shapes.medium
                     ) {
-                        Text("Generate QR Code", style = MaterialTheme.typography.titleMedium)
+                        if (isGenerating) {
+                            CircularProgressIndicator(
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.size(24.dp),
+                                strokeWidth = 2.dp
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Memproses...")
+                        } else {
+                            Text("Generate QR Code", style = MaterialTheme.typography.titleMedium)
+                        }
                     }
 
                     Button(
@@ -374,11 +391,13 @@ fun HomeScreenPreview() {
                 onInputChange = {},
                 qrBitmap = null,
                 onGenerateClick = {},
-                onViewListClick = {}
+                onViewListClick = {},
+                isGenerating = false,
             )
         }
     }
 }
+
 
 // Sumber https://composables.com/material3/dropdownmenu
 // https://youtu.be/9eIhMFTs1Q8?si=8FXF0d4sN3J1EVed

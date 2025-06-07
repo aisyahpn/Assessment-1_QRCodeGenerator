@@ -15,19 +15,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.delay
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.*
 import com.aisyahpn0033.qrcodegenerator.R
 import com.aisyahpn0033.qrcodegenerator.Screen
-import kotlinx.coroutines.delay
+import com.aisyahpn0033.qrcodegenerator.ui.theme.data.UserPreferences
 
 @Composable
 fun SplashScreen(navController: NavController, isPreview: Boolean = false) {
+    val context = LocalContext.current
+    val userPrefs = remember { UserPreferences(context) }
+    val isLoggedIn by userPrefs.getLoginStatus().collectAsState(initial = false)
+
     // Jika ini bukan tampilan Preview, maka akan ada efek delay untuk pindah ke layar Login
     if (!isPreview) {
         LaunchedEffect(Unit) {
-            delay(3000) // Menunda selama 3 detik
-            navController.navigate(Screen.Home.route) {
-                // Hapus Splash dari back stack agar tidak bisa kembali ke sini
-                popUpTo(Screen.Splash.route) { inclusive = true }
+            delay(2000) // efek splash 2 detik
+            navController.navigate(if (isLoggedIn) Screen.Home.route else Screen.Login.route) {
+                popUpTo(0) // clear back stack
             }
         }
     }
@@ -69,3 +75,5 @@ fun SplashScreenPreview() {
     val navController = rememberNavController() // NavController dummy untuk preview
     SplashScreen(navController = navController, isPreview = true) // Panggil splash dengan mode preview
 }
+
+// Sumber https://youtu.be/VTRz-8DPowM?si=gvjrGgCglZaMWlrP

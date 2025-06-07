@@ -9,6 +9,9 @@ data class QrEntity(
     val id: Int = 0,
     val text: String,
     val timestamp: Long = System.currentTimeMillis(),
-    val isDeleted: Boolean = false
+    val imagePath: String? = null,
+    val isDeleted: Boolean = false,
+    val isSynced: Boolean = false
+
 )
 

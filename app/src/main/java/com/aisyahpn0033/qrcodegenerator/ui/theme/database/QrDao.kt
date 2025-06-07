@@ -13,6 +13,9 @@ interface QrDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(qr: QrEntity)
 
+    @Query("SELECT * FROM qr_table WHERE id = :id LIMIT 1")
+    suspend fun getQrById(id: Int): QrEntity?
+
     @Query("SELECT * FROM qr_table WHERE isDeleted = 0 ORDER BY timestamp DESC")
     fun getAllQrs(): Flow<List<QrEntity>>
 
