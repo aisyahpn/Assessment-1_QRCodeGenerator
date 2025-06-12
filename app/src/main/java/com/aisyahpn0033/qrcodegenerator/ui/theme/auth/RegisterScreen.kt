@@ -283,4 +283,3 @@ fun RegisterScreenContent(
     }
 }
 
-// Sumber https://youtu.be/OlO58LDfN14?si=uEk6RejxsVWD45w5, https://youtu.be/PeUERQJnHdI?si=TtmyXJZP_-EXUyVt

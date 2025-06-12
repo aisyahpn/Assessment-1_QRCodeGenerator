@@ -36,7 +36,7 @@ class UserPreferences(private val context: Context) {
 
     suspend fun logout() {
         context.dataStore.edit { prefs ->
-            prefs.clear()
+            prefs[IS_LOGGED_IN] = false
         }
     }
 

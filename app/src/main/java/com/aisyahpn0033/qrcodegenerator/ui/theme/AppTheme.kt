@@ -50,4 +50,3 @@ fun AppTheme(
     )
 }
 
-// Sumber https://codelabs.developers.google.com/jetpack-compose-theming#0 Dan https://www.youtube.com/playlist?list=PL4QOjPJo8LNKgYbb2aiVLUdF5CAdpRsZ1

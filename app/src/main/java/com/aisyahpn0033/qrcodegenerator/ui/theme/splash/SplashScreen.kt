@@ -76,4 +76,3 @@ fun SplashScreenPreview() {
     SplashScreen(navController = navController, isPreview = true) // Panggil splash dengan mode preview
 }
 
-// Sumber https://youtu.be/VTRz-8DPowM?si=gvjrGgCglZaMWlrP

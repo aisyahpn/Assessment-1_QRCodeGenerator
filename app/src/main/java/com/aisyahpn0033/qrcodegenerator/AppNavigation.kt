@@ -8,19 +8,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-
-// Import screen-screen dari folder UI
-import com.aisyahpn0033.qrcodegenerator.ui.theme.splash.SplashScreen
-import com.aisyahpn0033.qrcodegenerator.ui.theme.home.HomeScreen
 import com.aisyahpn0033.qrcodegenerator.ui.theme.about.AboutScreen
 import com.aisyahpn0033.qrcodegenerator.ui.theme.auth.LoginScreen
-import com.aisyahpn0033.qrcodegenerator.ui.theme.auth.ProfileScreen
 import com.aisyahpn0033.qrcodegenerator.ui.theme.auth.RegisterScreen
+import com.aisyahpn0033.qrcodegenerator.ui.theme.home.HomeScreen
 import com.aisyahpn0033.qrcodegenerator.ui.theme.home.QRListScreen
 import com.aisyahpn0033.qrcodegenerator.ui.theme.recycle.RecycleBinScreen
+import com.aisyahpn0033.qrcodegenerator.ui.theme.splash.SplashScreen
 import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.QrViewModel
 import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.QrViewModelFactory
 import com.aisyahpn0033.qrcodegenerator.ui.theme.viewmodel.SettingsViewModel
+
 
 // Fungsi utama navigasi aplikasi
 @Composable
@@ -42,10 +40,6 @@ fun AppNavigation(
 
         composable(Screen.Register.route) {
             RegisterScreen(navController)
-        }
-
-        composable(Screen.Profile.route) {
-            ProfileScreen()
         }
 
         composable(Screen.About.route) {
@@ -80,8 +74,6 @@ sealed class Screen(val route: String) {
 
     object Register : Screen("register")
 
-    object Profile : Screen("profile")
-
     // Home screen route, dengan parameter userName (opsional di sini)
     data object Home : Screen("home/{userName}")
 
@@ -95,4 +87,3 @@ sealed class Screen(val route: String) {
 
 }
 
-// Sumber https://youtu.be/sRv2L4PiqvM?si=Ufetj6zbJMfWBJ11
