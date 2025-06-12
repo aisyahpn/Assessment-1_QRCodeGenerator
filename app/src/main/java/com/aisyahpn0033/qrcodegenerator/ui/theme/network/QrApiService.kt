@@ -11,7 +11,7 @@ interface QrApiService {
 }
 
 object RetrofitClient {
-    private const val BASE_URL = "https://fahrijalsyawaludin.github.io/users_qrcodes_api/"
+    private const val BASE_URL = "https://aisyahpn.github.io/users_qrcodes_api/"
 
     val api: QrApiService by lazy {
         Retrofit.Builder()
